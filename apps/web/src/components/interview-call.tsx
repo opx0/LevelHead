@@ -56,6 +56,7 @@ export function InterviewCall({
   const contextRef = useRef<AudioContext | null>(null)
   const animation = useRef(0)
   const mounted = useRef(true)
+  const cameraBusy = useRef(false)
 
   useEffect(() => {
     mounted.current = true
@@ -103,12 +104,14 @@ export function InterviewCall({
   }, [question.attemptId])
 
   const toggleCamera = async () => {
+    if (cameraBusy.current) return
     if (cam.current !== null) {
       cam.current.getTracks().forEach((track) => track.stop())
       cam.current = null
       setCamera(false)
       return
     }
+    cameraBusy.current = true
     setCameraProblem('')
     try {
       const media = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
@@ -121,12 +124,15 @@ export function InterviewCall({
       setCamera(true)
     } catch {
       setCameraProblem('Camera unavailable. Your microphone and the interview are unaffected.')
+    } finally {
+      cameraBusy.current = false
     }
   }
 
   const record = async () => {
     cancelSpeech()
     setProblem('')
+    // Captions own the microphone while open; close them so one recording path is live at a time.
     setCaptions(false)
     setPhase('connecting')
     try {
@@ -247,8 +253,14 @@ export function InterviewCall({
           </p>
         )}
         <div className={`call-self ${camera ? 'is-on' : ''}`}>
-          <video ref={video} muted autoPlay playsInline />
-          <span>{camera ? 'You · stays on this device' : 'Camera off'}</span>
+          <video
+            ref={video}
+            aria-label={camera ? 'Your camera preview' : 'Camera preview is off'}
+            muted
+            autoPlay
+            playsInline
+          />
+          <span aria-live="polite">{camera ? 'You · stays on this device' : 'Camera off'}</span>
         </div>
       </div>
 
@@ -291,7 +303,16 @@ export function InterviewCall({
         >
           {captions ? 'Hide live captions' : 'Live captions'}
         </button>
-        <button type="button" className="call-secondary" disabled={busy} onClick={onEnd}>
+        <button
+          type="button"
+          className="call-secondary"
+          disabled={busy}
+          onClick={() => {
+            // End the turn cleanly: stop any in-flight recording before leaving the room.
+            if (recorder.current?.state === 'recording') recorder.current.stop()
+            onEnd()
+          }}
+        >
           End interview
         </button>
       </div>
@@ -361,7 +382,7 @@ export function InterviewCall({
           <button
             type="button"
             className="call-primary"
-            disabled={busy || paused || answer.trim() === ''}
+            disabled={busy || paused || listening || answer.trim() === ''}
             onClick={onSend}
           >
             Send answer
