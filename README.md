@@ -111,6 +111,28 @@ bun run worker                          # repository ingestion, exports, retenti
 bun run voice:up                        # optional local speech; provision assets before offline use
 ```
 
+### One command for the local stack
+
+The commands above run in separate terminals. To get the same stack in labelled tmux windows:
+
+```sh
+bun run start        # validate .env, start db (and llama.cpp), migrate, then create or attach
+bun run status       # session windows, exit state, Compose health, model-cache path
+bun run logs [pane]  # last 60 lines from app, worker, voice or stream
+bun run stop         # close the session and stop only the Levelhead Compose services
+```
+
+`start` checks `DATABASE_URL`, the local-only generation rule and the streaming assets before it
+starts anything. A process that exits keeps its output in its own pane; it does not close the
+window or hide behind the panes still running. `--no-model` skips llama.cpp for text-only practice
+and `--no-attach` sets the session up without attaching.
+
+The streaming sidecar pane exists only when `VOICE_STREAM_TOKEN` and the four asset paths are
+complete; otherwise `start` names each missing variable and leaves that pane out rather than
+half-enabling the microphone path. Llama downloads live in `.levelhead/models/llama`, owned by the
+invoking user and ignored by git, so a recreated container reuses them. `stop` names the two Compose
+services explicitly and never touches another tmux session or an unrelated container.
+
 Voice is an I/O layer over the same text engine. The current batch sidecar needs Whisper and Piper
 assets and may download them on first use; provision them before offline use. The local-only generation
 guard on `main` does not cover speech asset loading. Native streaming speech

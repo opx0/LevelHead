@@ -13,6 +13,10 @@
   },
   "trustedDependencies": [],
   "scripts": {
+    "start": "bun run scripts/local-stack.ts start",
+    "stop": "bun run scripts/local-stack.ts stop",
+    "status": "bun run scripts/local-stack.ts status",
+    "logs": "bun run scripts/local-stack.ts logs",
     "data:backup": "bun run scripts/backup.ts",
     "data:restore": "bun run scripts/restore.ts",
     "data:pg:backup": "bun run scripts/postgres-backup.ts backup",

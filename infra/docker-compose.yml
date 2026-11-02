@@ -24,6 +24,11 @@ services:
     image: ${LLAMA_IMAGE:-ghcr.io/ggml-org/llama.cpp:server}
     container_name: levelhead-llama
     profiles: ['models']
+    # Run as the invoking user so downloaded weights stay owned by you, and keep HOME inside the
+    # mount so llama.cpp's download cache lands in the host directory rather than a named volume.
+    user: '${LEVELHEAD_MODEL_UID:-1000}:${LEVELHEAD_MODEL_GID:-1000}'
+    environment:
+      HOME: /models
     command: >
       -hf ${LLAMA_HF_REPO:-Qwen/Qwen2.5-3B-Instruct-GGUF:Q4_K_M}
       --host 0.0.0.0 --port 8080
@@ -32,8 +37,9 @@ services:
     ports:
       - '127.0.0.1:${LLAMA_PORT:-8081}:8080'
     volumes:
-      - llama-cache:/root/.cache/llama.cpp
+      # Host-owned cache: recreated containers reuse the download instead of fetching it again.
+      # Relative to this file, so the default is .levelhead/models/llama in the repository root.
+      - ${LEVELHEAD_MODEL_DIR:-../.levelhead/models/llama}:/models/.cache/llama.cpp
 
 volumes:
   levelhead-db-data:
-  llama-cache:
