@@ -1,6 +1,7 @@
 # /// script
 # requires-python = ">=3.13"
 # dependencies = [
+#   "av<19",
 #   "faster-whisper",
 #   "numpy",
 #   "piper-tts",

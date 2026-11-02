@@ -85,6 +85,338 @@ mark {
   color-scheme: dark;
 }
 
+/* Live room only: setup, saved sessions and Studio keep their existing journeys. */
+.call-room {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 12px 20px 40px;
+}
+.call-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  color: #969696;
+  font: 11px var(--font-mono);
+  letter-spacing: 0.08em;
+  padding: 12px 0 28px;
+}
+.call-question {
+  max-width: 660px;
+  margin: auto;
+  padding: 26px 30px;
+  background: #131313;
+  border: 1px solid #262626;
+  border-radius: 24px;
+}
+.call-question-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #b9b9b9;
+  font-size: 12px;
+  margin-bottom: 16px;
+}
+.call-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #a9a0ff;
+  background: #242133;
+  border-radius: 10px;
+  color: #cfc8ff;
+  font-weight: 700;
+}
+.call-question-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-height: 24px;
+  margin-bottom: 14px;
+}
+.call-question h1 {
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.call-artifact {
+  margin-top: 18px;
+  max-height: 260px;
+  overflow: auto;
+  border-top: 1px solid #242424;
+  padding-top: 16px;
+}
+.call-artifact figcaption {
+  color: #cfc8ff;
+}
+.call-stage {
+  position: relative;
+  min-height: 290px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.call-wave {
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 260px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #a8db7b09, transparent 70%);
+}
+.call-wave i {
+  display: block;
+  width: 5px;
+  border-radius: 8px;
+  min-height: 6px;
+  background: #b6ee82;
+  transition: height 0.08s;
+}
+.call-wave.is-live i {
+  background: #b6ee82;
+}
+.call-stage[data-phase='speaking'] .call-wave i {
+  background: #a396ff;
+  animation: call-speak 0.8s ease-in-out infinite alternate;
+}
+.call-stage[data-phase='thinking'] .call-wave {
+  animation: call-think 1.5s ease-in-out infinite;
+}
+.call-stage[data-phase='transcribing'] .call-wave i {
+  background: #d7be84;
+}
+.call-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 13px var(--font-mono);
+  color: #ddd;
+  margin: 15px 0 6px;
+}
+.call-status span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b6ee82;
+}
+.call-clock {
+  color: #929292;
+  font: 12px var(--font-mono);
+}
+.call-self {
+  position: absolute;
+  right: 0;
+  bottom: 25px;
+  width: 140px;
+  height: 96px;
+  border: 1px solid #252525;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #121212;
+  display: grid;
+  place-items: center;
+}
+.call-self video {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+.call-self.is-on video {
+  display: block;
+}
+.call-self span {
+  font-size: 11px;
+  color: #999;
+}
+.call-self.is-on span {
+  position: absolute;
+  bottom: 4px;
+  background: #0009;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.call-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.call-primary,
+.call-secondary {
+  border-radius: 999px;
+  padding: 13px 24px;
+  font-size: 13px;
+  border: 1px solid #323232;
+}
+.call-primary {
+  background: #b6ee82;
+  color: #18220e;
+  border-color: #b6ee82;
+  font-weight: 600;
+}
+.call-secondary {
+  background: #191919;
+  color: #ddd;
+}
+.call-primary:disabled,
+.call-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.call-options {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 20px 0;
+  color: #999;
+  font-size: 11px;
+}
+.call-options button:hover {
+  color: white;
+}
+.call-problem {
+  max-width: 660px;
+  margin: 16px auto;
+  padding: 12px 16px;
+  border: 1px solid #654d33;
+  border-radius: 12px;
+  color: #e1ba85;
+  font-size: 12px;
+}
+.call-review {
+  max-width: 660px;
+  margin: 24px auto;
+  padding: 20px;
+  background: #141414;
+  border: 1px solid #333;
+  border-radius: 18px;
+}
+.call-review label {
+  display: block;
+  font-size: 13px;
+}
+.call-review label span {
+  display: block;
+  color: #999;
+  font-size: 11px;
+  margin-top: 4px;
+}
+.call-review textarea {
+  width: 100%;
+  resize: vertical;
+  margin: 14px 0;
+  padding: 12px;
+  background: #0c0c0c;
+  border: 1px solid #333;
+  border-radius: 10px;
+}
+.call-review__actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.call-review__actions span {
+  color: #7f7f7f;
+  font-size: 11px;
+}
+.call-note {
+  max-width: 660px;
+  margin: 0 auto 8px;
+  color: #8f8f8f;
+  font-size: 11px;
+  text-align: center;
+}
+.call-captions {
+  max-width: 660px;
+  margin: 18px auto;
+  padding: 16px 18px;
+  border: 1px solid #2c2c2c;
+  border-radius: 16px;
+  background: #101010;
+}
+.call-history {
+  max-width: 760px;
+  margin: 36px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid #232323;
+}.call-history h2 {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b9b9b9;
+  margin: 0 0 4px;
+}
+.call-history > section > p {
+  color: #8f8f8f;
+  font-size: 12px;
+  margin: 0 0 20px;
+}
+.call-context {
+  border-top: 1px solid #252525;
+  margin: 32px auto 0;
+  max-width: 660px;
+  padding-top: 18px;
+  color: #aaa;
+  font-size: 12px;
+}
+.call-context[open] > :not(summary) {
+  margin-top: 18px;
+}
+@keyframes call-speak {
+  from {
+    height: 10px;
+  }
+  to {
+    height: 70px;
+  }
+}
+@keyframes call-think {
+  50% {
+    opacity: 0.3;
+  }
+}
+@media (max-width: 640px) {
+  .call-top {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .call-question {
+    padding: 20px;
+  }
+  .call-self {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin: 18px 0;
+  }
+  .call-stage {
+    padding: 20px 0;
+  }
+  .call-controls {
+    gap: 6px;
+  }
+  .call-secondary,
+  .call-primary {
+    padding: 11px 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .call-wave,
+  .call-wave i {
+    animation: none !important;
+    transition: none;
+  }
+}
+
 /* Compact, product-first navigation follows the Dovetail reference header. */
 .studio-shell {
   min-height: 100vh;

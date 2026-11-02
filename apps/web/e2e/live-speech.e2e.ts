@@ -46,9 +46,7 @@ test('live microphone frames stay provisional until Done and a final answer is e
     await page.goto('/app/')
     await page.getByRole('link', { name: 'Start an interview' }).click()
     await page.getByRole('button', { name: 'Start the interview' }).click()
-    await page
-      .getByRole('checkbox', { name: /read questions aloud and let me answer by voice/ })
-      .check()
+    await page.getByRole('button', { name: 'Live captions' }).click()
     await page.getByRole('button', { name: 'Start live speech' }).click()
     await expect(page.getByText('Live text: working words')).toBeVisible()
     await expect(page.getByPlaceholder('Answer in your own words')).toBeEmpty()
@@ -95,9 +93,7 @@ test('recognizer disconnect keeps the provisional words editable without submitt
     await page.goto('/app/')
     await page.getByRole('link', { name: 'Start an interview' }).click()
     await page.getByRole('button', { name: 'Start the interview' }).click()
-    await page
-      .getByRole('checkbox', { name: /read questions aloud and let me answer by voice/ })
-      .check()
+    await page.getByRole('button', { name: 'Live captions' }).click()
     await page.getByRole('button', { name: 'Start live speech' }).click()
     await expect(page.getByPlaceholder('Answer in your own words')).toHaveValue(
       'recover these words',
@@ -165,9 +161,7 @@ test('a dropped browser socket reconnects to the same recognizer before finalizi
     await page.goto('/app/')
     await page.getByRole('link', { name: 'Start an interview' }).click()
     await page.getByRole('button', { name: 'Start the interview' }).click()
-    await page
-      .getByRole('checkbox', { name: /read questions aloud and let me answer by voice/ })
-      .check()
+    await page.getByRole('button', { name: 'Live captions' }).click()
     await page.getByRole('button', { name: 'Start live speech' }).click()
     await expect(page.getByText('Live text: before disconnect')).toBeVisible()
     await page.evaluate(() => (window as Window & { liveSocket?: WebSocket }).liveSocket?.close())

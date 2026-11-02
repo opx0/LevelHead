@@ -9,6 +9,7 @@ import { FindingCard } from '../components/finding-card.tsx'
 import { ClaimChip, FilePanel, TopicChip } from '../components/question.tsx'
 import { Recorder } from '../components/recorder.tsx'
 import { LiveRecorder } from '../components/live-recorder.tsx'
+import { InterviewCall } from '../components/interview-call.tsx'
 import { Button, Empty, Failed, Loading, Panel, Quiet, Tag } from '../components/primitives.tsx'
 import { JourneyIcon, JourneyLink, PageIntro, PracticeFlow } from '../components/journey.tsx'
 import { useClaimSet, usePreparation } from '../lib/claim-set.ts'
@@ -1127,6 +1128,82 @@ function InterviewRoom({
 
   const live = room.closedBy === null && !room.interrupted
   const feedbackAvailable = room.mode !== 'simulation' || room.closedBy !== null
+
+  const currentQuestion = room.exchanges.at(-1)?.question
+  if (live && currentQuestion !== undefined) {
+    return (
+      <EvidenceProvider>
+        <InterviewCall
+          sessionId={sessionId}
+          question={currentQuestion}
+          context={`${words(room.mode)} · Round ${(room.round?.index ?? 0) + 1} of ${room.round?.total ?? 1} · ${ROUND_LABEL[currentQuestion.round]}`}
+          meta={
+            <>
+              {currentQuestion.topic && <TopicChip topic={currentQuestion.topic} />}
+              {currentQuestion.claim && <ClaimChip assertion={currentQuestion.claim.assertion} />}
+              <Tag tone="accent">{words(currentQuestion.action.toLowerCase())}</Tag>
+            </>
+          }
+          artifact={
+            currentQuestion.artifact === undefined ? null : (
+              <FilePanel artifact={currentQuestion.artifact} />
+            )
+          }
+          history={
+            room.exchanges.length > 1 ? (
+              <section>
+                <h2>Conversation so far</h2>
+                <p>
+                  Earlier answers stay with their findings. Hover a finding to see the words it
+                  cites.
+                </p>
+                <Transcript
+                  exchanges={room.exchanges.slice(0, -1)}
+                  findings={room.findings}
+                  quotes={room.quotes}
+                  live={false}
+                />
+              </section>
+            ) : null
+          }
+          pending={reply.isPending || stop.isPending}
+          paused={Boolean(room.timingPaused)}
+          deadline={room.deadlineAt}
+          answer={answer}
+          onAnswer={setAnswer}
+          onSpoken={setSpoken}
+          onSend={send}
+          onEnd={() => stop.mutate()}
+          error={
+            <>
+              {reply.isError && <Failed error={reply.error} />}
+              {stop.isError && <Failed error={stop.error} />}
+            </>
+          }
+        >
+          <PressureLadder level={room.pressure} ceiling={room.ceiling} />
+          {room.deadlineAt !== undefined || room.timingPaused ? (
+            <Button
+              onClick={() => timing.mutate(room.timingPaused ? 'resume' : 'pause')}
+              disabled={timing.isPending || reply.isPending}
+            >
+              {room.timingPaused ? 'Resume timer' : 'Pause timer'}
+            </Button>
+          ) : null}
+          {timing.isError && <Failed error={timing.error} />}
+          {room.mode === 'drill' && (
+            <div>
+              <Button disabled={hint.isPending || hintLevel >= 3} onClick={() => hint.mutate()}>
+                Show coaching hint
+              </Button>
+              {hint.data && <p>{hint.data.text}</p>}
+              {hint.isError && <Failed error={hint.error} />}
+            </div>
+          )}
+        </InterviewCall>
+      </EvidenceProvider>
+    )
+  }
 
   return (
     <EvidenceProvider>
