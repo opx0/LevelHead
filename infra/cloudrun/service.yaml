@@ -28,6 +28,8 @@ spec:
               value: postgres
             - name: LEVELHEAD_DEMO_MODE
               value: 'true'
+            - name: LEVELHEAD_PREVIEW_MODE
+              value: 'true'
             - name: LEVELHEAD_RATE_LIMIT_PER_MINUTE
               value: '60'
             - name: LOG_LEVEL

@@ -60,7 +60,7 @@ case "${1:-}" in
       --image "$(image server)" --region "$REGION" --project "$PROJECT" \
       --allow-unauthenticated \
       --min-instances 0 --max-instances 2 --concurrency 20 --timeout 120 \
-      --set-env-vars NODE_ENV=production,LEVELHEAD_STORE=postgres,LEVELHEAD_DEMO_MODE=true,LEVELHEAD_RATE_LIMIT_PER_MINUTE=60 \
+      --set-env-vars NODE_ENV=production,LEVELHEAD_STORE=postgres,LEVELHEAD_DEMO_MODE=true,LEVELHEAD_PREVIEW_MODE=true,LEVELHEAD_RATE_LIMIT_PER_MINUTE=60 \
       --set-secrets DATABASE_URL=levelhead-database-url:latest,MODEL_PROVIDER_API_KEY=levelhead-model-key:latest \
       --quiet
 
