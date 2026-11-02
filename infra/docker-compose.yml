@@ -38,8 +38,10 @@ services:
       - '127.0.0.1:${LLAMA_PORT:-8081}:8080'
     volumes:
       # Host-owned cache: recreated containers reuse the download instead of fetching it again.
-      # Relative to this file, so the default is .levelhead/models/llama in the repository root.
-      - ${LEVELHEAD_MODEL_DIR:-../.levelhead/models/llama}:/models/.cache/llama.cpp
+      # The whole model directory is mounted because llama.cpp writes both .cache/huggingface
+      # and .cache/llama.cpp under HOME. Relative to this file, so the default is
+      # .levelhead/models/llama in the repository root.
+      - ${LEVELHEAD_MODEL_DIR:-../.levelhead/models/llama}:/models
 
 volumes:
   levelhead-db-data:
